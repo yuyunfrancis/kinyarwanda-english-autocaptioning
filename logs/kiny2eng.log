@@ -1,0 +1,22 @@
+2025-02-26 04:46:19,676 - kiny2eng - INFO - Starting Kinyarwanda to English translation pipeline
+2025-02-26 04:46:19,676 - kiny2eng - INFO - Transcribing ./data/kinyarwanda_1.mp3
+2025-02-26 04:51:40,953 - kiny2eng - INFO - Starting Kinyarwanda to English translation pipeline
+2025-02-26 04:51:40,953 - kiny2eng - INFO - Transcribing ./data/kinyarwanda_1.mp3
+2025-02-26 04:59:39,144 - kiny2eng - INFO - Transcription saved to ./output/kinyarwanda_1_transcription.txt
+2025-02-26 04:59:39,144 - kiny2eng - INFO - Translating transcription to English
+2025-02-26 05:01:26,698 - kiny2eng - INFO - Starting Kinyarwanda to English translation pipeline
+2025-02-26 05:01:26,698 - kiny2eng - INFO - Transcribing ./data/kinyarwanda_1.mp3
+2025-02-26 05:07:53,872 - kiny2eng - INFO - Starting Kinyarwanda to English translation pipeline
+2025-02-26 05:07:53,872 - kiny2eng - INFO - Transcribing ./data/kinyarwanda_1.mp3
+2025-02-26 05:09:30,407 - kiny2eng - INFO - Transcription saved to ./output/kinyarwanda_1_transcription.txt
+2025-02-26 05:09:30,407 - kiny2eng - INFO - Translating transcription to English
+2025-02-26 05:10:43,967 - kiny2eng - INFO - Translation saved to ./output/kinyarwanda_1_translation.txt
+2025-02-26 05:10:43,967 - kiny2eng - INFO - Generating captions
+2025-02-26 05:10:53,982 - kiny2eng - INFO - Captions saved to ./output/kinyarwanda_1_captions.srt
+2025-02-26 05:10:53,982 - kiny2eng - INFO - Creating captioned video
+2025-02-26 05:16:20,828 - kiny2eng - INFO - Starting Kinyarwanda to English translation pipeline
+2025-02-26 05:16:20,828 - kiny2eng - INFO - Transcribing ./data/kinyarwanda_1.mp3
+2025-02-26 05:18:00,058 - kiny2eng - INFO - Transcription saved to ./output/kinyarwanda_1_transcription.txt
+2025-02-26 05:18:00,058 - kiny2eng - INFO - Translating transcription to English
+2025-02-26 05:19:09,109 - kiny2eng - INFO - Starting Kinyarwanda to English translation pipeline
+2025-02-26 05:19:09,109 - kiny2eng - INFO - Transcribing ./data/kinyarwanda_1.mp3

@@ -1,0 +1,33 @@
+# Configuration for Kinyarwanda to English Audio Translation Pipeline
+
+transcription:
+  # Whisper model for speech recognition
+  model_name: "mbazaNLP/Whisper-Small-Kinyarwanda"
+  # Size of audio chunks in seconds
+  chunk_size: 30
+  # Overlap between chunks in seconds
+  overlap: 5
+  # Language code for transcription
+  language: "sw"
+  # Task type (transcribe or translate)
+  task: "transcribe"
+
+translation:
+  # Translation model
+  model_name: "RogerB/marian-finetuned-multidataset-kin-to-en"
+
+captioning:
+  # Caption format (srt or vtt)
+  format: "srt"
+  # Font size for captions in video
+  font_size: 24
+  # Position of captions (bottom, top, middle)
+  position: "bottom"
+  # Whether to automatically generate a video when no video input is provided
+  generate_video: false
+
+logging:
+  # Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+  level: "INFO"
+  # Log file path
+  file: "logs/kiny2eng.log"

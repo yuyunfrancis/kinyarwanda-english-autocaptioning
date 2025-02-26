@@ -1,0 +1,13 @@
+# Ignore virtual environment
+venv/
+
+# Ignore environment variables file
+.env
+
+# Ignore output folder
+output/
+
+# Ignore data folder
+data/
+
+/src/__pycache__/
