@@ -3,8 +3,9 @@ import os
 import argparse
 from src.transcription import transcribe_audio_file
 from src.translation import translate_text
-from src.captioning import generate_captions, create_captioned_video
+from src.captioning import create_blank_video, generate_captions, create_captioned_video
 from src.utils import setup_logging, load_config
+
 
 def main():
     # Set up argument parser
@@ -84,21 +85,22 @@ def process_file(audio_path, output_dir, video_path, mode, config, logger):
         
         logger.info(f"Captions saved to {caption_file}")
         
-        # Create captioned video (if video path is provided)
-        if video_path:
-            if not os.path.isfile(video_path):
-                logger.error(f"Video file {video_path} does not exist")
-                return
-            
-            logger.info(f"Creating captioned video for {video_path}")
-            create_captioned_video(
-                video_path, 
-                caption_file, 
-                f"{output_base}_captioned.mp4",
-                config['captioning']['font_size'],
-                config['captioning']['position']
-            )
-            logger.info(f"Captioned video saved to {output_base}_captioned.mp4")
+        # Create blank video if no video path is provided or if the provided path is a directory
+        if not video_path or os.path.isdir(video_path):
+            video_path = f"{output_base}_blank.mp4"
+            create_blank_video(duration=60, resolution="1920x1080", output_path=video_path)
+            logger.info(f"Blank video created at {video_path}")
+        
+        # Create captioned video
+        logger.info(f"Creating captioned video for {video_path}")
+        create_captioned_video(
+            video_path, 
+            caption_file, 
+            f"{output_base}_captioned.mp4",
+            config['captioning']['font_size'],
+            config['captioning']['position']
+        )
+        logger.info(f"Captioned video saved to {output_base}_captioned.mp4")
     
     logger.info(f"Processing complete for {audio_path}")
     return {

@@ -1,4 +1,3 @@
-
 import os
 import subprocess
 from datetime import timedelta
@@ -221,6 +220,30 @@ def create_captioned_video(video_path, caption_file, output_path, font_size=24, 
         "-vf", f"subtitles={caption_file}:force_style='FontSize={font_size},Alignment=2,OutlineColour=&H40000000,BorderStyle=3'",
         "-c:v", "libx264", "-crf", "18",
         "-c:a", "copy",
+        output_path
+    ]
+    
+    # Run FFmpeg
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    if result.returncode != 0:
+        raise RuntimeError(f"FFmpeg error: {result.stderr.decode()}")
+
+def create_blank_video(duration, resolution, output_path):
+    """
+    Create a blank video using FFmpeg
+    
+    Args:
+        duration: Duration of the video in seconds
+        resolution: Resolution of the video (e.g., "1920x1080")
+        output_path: Path to save the output video
+    """
+    # Build FFmpeg command to create a blank video
+    cmd = [
+        "ffmpeg", "-y",
+        "-f", "lavfi",
+        "-i", f"color=c=black:s={resolution}:d={duration}",
+        "-c:v", "libx264",
         output_path
     ]
     
