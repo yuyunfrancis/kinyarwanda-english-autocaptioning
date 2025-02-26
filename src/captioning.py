@@ -1,4 +1,4 @@
-# src/captioning.py
+
 import os
 import subprocess
 from datetime import timedelta

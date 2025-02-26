@@ -1,4 +1,4 @@
-# src/translation.py
+
 import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import re

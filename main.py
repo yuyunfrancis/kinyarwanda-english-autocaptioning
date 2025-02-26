@@ -60,59 +60,45 @@ def process_file(audio_path, output_dir, video_path, mode, config, logger):
             f.write(transcription)
         
         logger.info(f"Transcription saved to {output_base}_transcription.txt")
-    else:
-        # Load transcription if already exists
-        with open(f"{output_base}_transcription.txt", 'r', encoding='utf-8') as f:
-            transcription = f.read()
-        chunks = None  # We don't have chunks when loading from file
     
-    # Step 2: Translation
-    if mode in ['translate', 'full', 'caption']:
-        logger.info(f"Translating transcription to English")
-        translation = translate_text(
-            transcription,
-            config['translation']['model_name']
-        )
+    # Step 2: Translation (if needed)
+    if mode in ['translate', 'full']:
+        logger.info(f"Translating transcription for {audio_path}")
+        translation = translate_text(transcription, config['translation']['model_name'])
         
         # Save translation
         with open(f"{output_base}_translation.txt", 'w', encoding='utf-8') as f:
             f.write(translation)
         
         logger.info(f"Translation saved to {output_base}_translation.txt")
-    else:
-        # Skip translation
-        translation = None
     
-    # Step 3: Captioning
-    if mode in ['caption', 'full'] and (video_path is not None or config.get('captioning', {}).get('generate_video', False)):
-        logger.info(f"Generating captions")
-        
-        captions = generate_captions(
-            transcription, 
-            translation, 
-            chunks,
-            config['captioning']['format']
-        )
+    # Step 3: Captioning (if needed)
+    if mode in ['caption', 'full']:
+        logger.info(f"Generating captions for {audio_path}")
+        captions = generate_captions(transcription, translation, chunks, config['captioning']['format'])
         
         # Save captions
         caption_file = f"{output_base}_captions.{config['captioning']['format']}"
         with open(caption_file, 'w', encoding='utf-8') as f:
             f.write(captions)
-            
+        
         logger.info(f"Captions saved to {caption_file}")
         
-        # Create captioned video if requested
-        if video_path is not None:
-            logger.info(f"Creating captioned video")
-            output_video = f"{output_base}_captioned.mp4"
+        # Create captioned video (if video path is provided)
+        if video_path:
+            if not os.path.isfile(video_path):
+                logger.error(f"Video file {video_path} does not exist")
+                return
+            
+            logger.info(f"Creating captioned video for {video_path}")
             create_captioned_video(
-                video_path,
-                caption_file,
-                output_video,
+                video_path, 
+                caption_file, 
+                f"{output_base}_captioned.mp4",
                 config['captioning']['font_size'],
                 config['captioning']['position']
             )
-            logger.info(f"Captioned video saved to {output_video}")
+            logger.info(f"Captioned video saved to {output_base}_captioned.mp4")
     
     logger.info(f"Processing complete for {audio_path}")
     return {
