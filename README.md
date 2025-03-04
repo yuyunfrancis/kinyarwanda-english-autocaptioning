@@ -13,8 +13,8 @@ This project provides a pipeline for transcribing, translating, and captioning K
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/yourusername/kinyarwanda-translator.git
-   cd kinyarwanda-translator
+   git clone https://github.com/yuyunfrancis/kinyarwanda-english-autocaptioning.git
+   cd kinyarwanda-english-autocaptioning
    ```
 
 2. **Create and activate a virtual environment** (optional but recommended):
