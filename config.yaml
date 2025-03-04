@@ -4,9 +4,9 @@ transcription:
   # Whisper model for speech recognition
   model_name: "mbazaNLP/Whisper-Small-Kinyarwanda"
   # Size of audio chunks in seconds
-  chunk_size: 30
+  chunk_size: 15
   # Overlap between chunks in seconds
-  overlap: 5
+  overlap: 3
   # Language code for transcription
   language: "sw"
   # Task type (transcribe or translate)

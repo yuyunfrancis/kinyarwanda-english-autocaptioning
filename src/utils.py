@@ -35,9 +35,9 @@ def load_config(config_path):
     default_config = {
         "transcription": {
             "model_name": "mbazaNLP/Whisper-Small-Kinyarwanda",
-            "chunk_size": 30,
-            "overlap": 5,
-            "language": "sw",
+            "chunk_size": 15,  
+            "overlap": 3,      
+            "language": "sw", 
             "task": "transcribe"
         },
         "translation": {

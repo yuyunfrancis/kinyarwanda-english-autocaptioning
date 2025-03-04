@@ -1,6 +1,7 @@
 import os
 import subprocess
 from datetime import timedelta
+from src.translation import translate_chunks
 
 def format_timestamp(seconds, format_type="srt"):
     """Convert seconds to formatted timestamp"""
@@ -42,8 +43,6 @@ def generate_captions(transcription, translation, chunks, format_type="srt"):
 
 def generate_srt_captions(transcription, translation, chunks):
     """Generate SRT format captions"""
-    from src.translation import translate_chunks
-    
     # If we have both transcription and translation, we can add both
     if transcription and translation:
         # First get translation for each chunk
@@ -51,6 +50,10 @@ def generate_srt_captions(transcription, translation, chunks):
         
         srt_content = []
         for i, chunk in enumerate(translated_chunks, 1):
+            # Skip invalid chunks
+            if not chunk.get("original_text") or not chunk.get("translated_text"):
+                continue
+                
             start_time = format_timestamp(chunk["start_time"], "srt")
             end_time = format_timestamp(chunk["end_time"], "srt")
             
@@ -63,50 +66,68 @@ def generate_srt_captions(transcription, translation, chunks):
     
     # If we only have translation, just use that
     elif translation:
-        # We'll need to estimate timing based on character count
-        chars_per_second = 20  # Adjust as needed
-        words = translation.split()
+        # Improved timing based on sentence structure rather than just character count
+        import re
+        sentences = re.split(r'(?<=[.!?])\s+', translation)
+        
+        total_chars = sum(len(s) for s in sentences)
+        # Estimate audio duration (assuming average speaking rate)
+        # Typical speaking rate is 150-160 words per minute
+        # Assuming average word length of 5 characters, that's ~30 chars/second
+        estimated_duration = total_chars / 30
+        chars_per_second = total_chars / max(estimated_duration, len(sentences))
         
         srt_content = []
-        current_chunk = []
-        current_duration = 0
+        current_time = 0
         chunk_count = 1
         
-        for word in words:
-            word_duration = len(word) / chars_per_second
+        for sentence in sentences:
+            if not sentence.strip():
+                continue
+                
+            # Calculate duration based on sentence length
+            sentence_duration = len(sentence) / chars_per_second
             
-            if current_duration + word_duration > 5:  # Max 5 seconds per caption
-                # Create caption for current chunk
-                start_time = format_timestamp(chunk_count * 5 - current_duration, "srt")
-                end_time = format_timestamp(chunk_count * 5, "srt")
+            # Add minimum duration for very short sentences
+            sentence_duration = max(sentence_duration, 1.5)
+            
+            # Split long sentences
+            words = sentence.split()
+            if len(words) > 12:
+                # Split into segments of ~10 words
+                segments = []
+                for j in range(0, len(words), 10):
+                    segments.append(" ".join(words[j:j+10]))
+                
+                segment_duration = sentence_duration / len(segments)
+                for segment in segments:
+                    start_time = format_timestamp(current_time, "srt")
+                    current_time += segment_duration
+                    end_time = format_timestamp(current_time, "srt")
+                    
+                    srt_content.append(f"{chunk_count}")
+                    srt_content.append(f"{start_time} --> {end_time}")
+                    srt_content.append(segment)
+                    srt_content.append("")  # Empty line
+                    chunk_count += 1
+            else:
+                start_time = format_timestamp(current_time, "srt")
+                current_time += sentence_duration
+                end_time = format_timestamp(current_time, "srt")
                 
                 srt_content.append(f"{chunk_count}")
                 srt_content.append(f"{start_time} --> {end_time}")
-                srt_content.append(" ".join(current_chunk))
+                srt_content.append(sentence)
                 srt_content.append("")  # Empty line
-                
-                # Reset for next chunk
-                current_chunk = [word]
-                current_duration = word_duration
                 chunk_count += 1
-            else:
-                current_chunk.append(word)
-                current_duration += word_duration
-        
-        # Add the last chunk if any
-        if current_chunk:
-            start_time = format_timestamp(chunk_count * 5 - current_duration, "srt")
-            end_time = format_timestamp(chunk_count * 5, "srt")
-            
-            srt_content.append(f"{chunk_count}")
-            srt_content.append(f"{start_time} --> {end_time}")
-            srt_content.append(" ".join(current_chunk))
-            srt_content.append("")  # Empty line
     
     # If we only have transcription (original text)
     else:
         srt_content = []
         for i, chunk in enumerate(chunks, 1):
+            if not chunk.get("text", "").strip():
+                continue
+                
             start_time = format_timestamp(chunk["start_time"], "srt")
             end_time = format_timestamp(chunk["end_time"], "srt")
             
@@ -119,7 +140,7 @@ def generate_srt_captions(transcription, translation, chunks):
 
 def generate_vtt_captions(transcription, translation, chunks):
     """Generate WebVTT format captions"""
-    from src.translation import translate_chunks
+
     
     # Start with VTT header
     vtt_content = ["WEBVTT", ""]
